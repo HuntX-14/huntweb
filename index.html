@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hunter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+    };
+  </script>
+  <style>
+    thead {
+      display: none;
+    }
+    .mod-row {
+      background: linear-gradient(to right, #1f2937 0%, #1f2937 85%, rgba(31, 41, 55, 0.5) 100%);
+      border: 1px solid #374151;
+      border-radius: 0.5rem;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .mod-row:hover {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 2px #6366f1;
+    }
+
+    .mod-cell-left {
+      border-top-left-radius: 0.5rem;
+      border-bottom-left-radius: 0.5rem;
+    }
+
+    .mod-cell-right {
+      border-top-right-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+    }
+
+    #socials a {
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+    }
+
+    #socials a:hover {
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .btn-custom {
+      transition: box-shadow 0.3s ease, background-color 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .btn-custom:hover {
+      box-shadow: 0 0 0 2px #6366f1;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col md:flex-row">
+  <!-- Sidebar -->
+  <nav aria-label="Barra lateral" class="w-full md:w-64 p-4 bg-gray-800 md:fixed md:h-full md:overflow-y-auto border-b md:border-b-0 md:border-r border-gray-700 text-gray-300">
+    <header class="text-center">
+      <h1 class="text-3xl font-bold text-gray-100">Hunter</h1>
+      <p class="text-sm text-gray-400 mb-4">I'm Hunter, yeah.</p>
+    </header>
+    <div class="relative mb-4">
+      <input id="searchInput" type="text" placeholder="Buscar mod..."
+        class="w-full p-2 rounded bg-gray-700 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      <button id="clearSearch" aria-label="Limpiar búsqueda" title="Limpiar búsqueda"
+        class="absolute right-2 top-1/2 -translate-y-1/2 text-xl text-gray-400 hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">&times;</button>
+    </div>
+
+    <h2 class="font-semibold mb-2 text-gray-300">Redes Sociales</h2>
+    <div id="socials" role="list" class="space-y-2"></div>
+  </nav>
+
+  <!-- Main Content -->
+  <main role="main" class="flex-1 p-6 mt-4 md:mt-0 md:ml-64 w-full">
+    <h2 class="text-2xl font-bold mb-2 text-gray-100">Descarga De Mods</h2>
+
+    <p class="mb-6 text-gray-200 leading-relaxed text-base">
+      En esta página se almacenan los mods que he creado a lo largo del tiempo, de manera directa, ver el video de referencia y acceder al enlace de descarga.
+    </p>
+    <p class="mb-8 italic text-indigo-300 leading-relaxed max-w-prose text-lg text-justify">
+      Puede haber mods que no muestro en el canal, como animaciones cortas.
+    </p>
+
+    <div class="hidden md:block">
+      <table class="w-full text-left border-separate border-spacing-y-2" role="table" aria-label="Tabla de mods disponibles">
+        <thead class="bg-gray-800 text-gray-300" role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" class="p-2 text-left text-lg uppercase">Mod</th>
+            <th role="columnheader" class="p-2 text-left text-lg uppercase">Detalles</th>
+            <th role="columnheader" class="p-2 text-left text-lg uppercase">Video</th>
+            <th role="columnheader" class="p-2 text-left text-lg uppercase">Descargar</th>
+          </tr>
+        </thead>
+        <tbody id="mods-table" role="rowgroup"></tbody>
+      </table>
+    </div>
+
+    <!-- Cards for mobile view -->
+    <div id="mods-cards" class="md:hidden space-y-4"></div>
+  </main>
+
+  <script>
+    // Tu script permanece intacto, sin cambios
+    async function cargarMods() {
+      try {
+        const response = await fetch("mods.json");
+        const data = await response.json();
+        const table = document.getElementById("mods-table");
+        const cards = document.getElementById("mods-cards");
+        data.forEach((mod) => {
+          const row = document.createElement("tr");
+          row.className = "mod-row";
+          row.setAttribute("role", "row");
+          row.innerHTML = `
+            <td role="cell" class="p-4 align-top font-semibold text-left mod-cell-left">${mod.nombre}</td>
+            <td role="cell" class="p-4 align-top text-left">${mod.descripcion}</td>
+            <td role="cell" class="p-4 align-top text-left mod-button-cell">
+              <a href="${mod.video}" target="_blank" aria-label="Ver video de ${mod.nombre}">
+                <button class="bg-gray-700 hover:bg-gray-600 text-white btn-custom rounded shadow font-semibold">
+                  <i class="fa-solid fa-video"></i>
+                </button>
+              </a>
+            </td>
+            <td role="cell" class="p-4 align-top text-left mod-cell-right">
+              <a href="${mod.descarga}" target="_blank" aria-label="Descargar ${mod.nombre}">
+                <button class="bg-gray-600 hover:bg-gray-500 text-white btn-custom rounded shadow font-semibold">
+                  <i class="fa-solid fa-download"></i>
+                </button>
+              </a>
+            </td>
+          `;
+          table.appendChild(row);
+
+          const card = document.createElement("div");
+          card.className = "bg-gray-800 text-gray-200 p-4 rounded shadow";
+          card.innerHTML = `
+            <h3 class="text-xl font-semibold mb-1 text-left">${mod.nombre}</h3>
+            <p class="mb-2 text-left">${mod.descripcion}</p>
+            <div class="flex space-x-4">
+              <a href="${mod.video}" target="_blank" class="flex-1" aria-label="Ver video de ${mod.nombre}">
+                <button class="w-10 h-10 bg-gray-700 hover:bg-gray-600 text-white rounded shadow font-semibold btn-custom">
+                  <i class="fa-solid fa-video"></i>
+                </button>
+              </a>
+              <a href="${mod.descarga}" target="_blank" class="flex-1" aria-label="Descargar ${mod.nombre}">
+                <button class="w-10 h-10 bg-gray-600 hover:bg-gray-500 text-white rounded shadow font-semibold btn-custom">
+                  <i class="fa-solid fa-download"></i>
+                </button>
+              </a>
+            </div>
+          `;
+          cards.appendChild(card);
+        });
+      } catch (error) {
+        console.error("Error cargando mods:", error);
+      }
+    }
+
+    async function cargarSocials() {
+      try {
+        const res = await fetch("socials.json");
+        const data = await res.json();
+        const container = document.getElementById("socials");
+        data.forEach((red) => {
+          const btn = document.createElement("a");
+          btn.href = red.link;
+          btn.target = "_blank";
+          btn.setAttribute("role", "listitem");
+          btn.className = `${red.color} text-white font-semibold px-4 py-2 flex items-center space-x-2 rounded shadow transition duration-200`;
+          btn.innerHTML = `
+            <i class="${red.icono}"></i>
+            <span>${red.nombre}${red.usuario ? ": " + red.usuario : ""}</span>
+          `;
+          container.appendChild(btn);
+        });
+      } catch (error) {
+        console.error("Error cargando redes sociales:", error);
+      }
+    }
+
+    function filtrarMods() {
+      const filter = searchInput.value.toLowerCase();
+      let anyVisible = false;
+
+      document.querySelectorAll("#mods-table tr").forEach((row) => {
+        const mod = row.children[0]?.textContent.toLowerCase() || "";
+        const visible = mod.includes(filter);
+        row.style.display = visible ? "" : "none";
+        if (visible) anyVisible = true;
+      });
+
+      document.querySelectorAll("#mods-cards > div").forEach((card) => {
+        const title = card.querySelector("h3").textContent.toLowerCase();
+        const visible = title.includes(filter);
+        card.style.display = visible ? "" : "none";
+        if (visible) anyVisible = true;
+      });
+
+      const noResults = document.getElementById("no-results");
+      if (!anyVisible) {
+        if (!noResults) {
+          const p = document.createElement("p");
+          p.id = "no-results";
+          p.setAttribute("role", "alert");
+          p.setAttribute("aria-live", "polite");
+          p.className = "text-red-400 mt-4 font-semibold";
+          p.textContent = "No se encontraron mods.";
+          document.querySelector("main").appendChild(p);
+        }
+      } else if (noResults) {
+        noResults.remove();
+      }
+    }
+
+    document.getElementById("searchInput").addEventListener("input", filtrarMods);
+    document.getElementById("clearSearch").addEventListener("click", () => {
+      document.getElementById("searchInput").value = "";
+      filtrarMods();
+    });
+
+    cargarMods();
+    cargarSocials();
+  </script>
+</body>
+</html>

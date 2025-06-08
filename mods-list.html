@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Mods - Editor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #cbd5e1;
+    }
+    input, textarea, button {
+      background-color: #1e293b;
+      color: #cbd5e1;
+      border-color: #334155;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 5px #3b82f6;
+      background-color: #273549;
+    }
+    button {
+      border: none;
+    }
+    button:hover {
+      filter: brightness(1.1);
+    }
+    .drag-handle {
+      cursor: grab;
+      padding: 0.5rem 0.75rem;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: #60a5fa;
+      transition: background-color 0.2s, box-shadow 0.2s;
+      border-radius: 0.375rem;
+      background-color: #1e293b;
+    }
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+    .sortable-ghost {
+      background-color: #3b82f6 !important;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6);
+      opacity: 0.9 !important;
+    }
+  </style>
+</head>
+<body class="p-6 flex flex-col items-center min-h-screen">
+
+  <h1 class="text-3xl font-bold mb-6">Mods</h1>
+
+  <section class="bg-[#1e293b] p-6 rounded shadow mb-10 w-full max-w-xl">
+    <h2 class="text-2xl font-semibold mb-6">Formulario</h2>
+    <form id="modForm" class="space-y-6">
+      <div>
+        <label for="nombre" class="block font-semibold mb-2">Nombre</label>
+        <input
+          type="text"
+          id="nombre"
+          required
+          class="w-full rounded px-4 py-3 border"
+          autocomplete="off"
+        />
+      </div>
+      <div>
+        <label for="descripcion" class="block font-semibold mb-2">Descripción</label>
+        <textarea
+          id="descripcion"
+          required
+          class="w-full rounded px-4 py-3 border resize-none"
+          rows="4"
+          autocomplete="off"
+        ></textarea>
+      </div>
+      <div>
+        <label for="video" class="block font-semibold mb-2">Video</label>
+        <input
+          type="url"
+          id="video"
+          required
+          class="w-full rounded px-4 py-3 border"
+          autocomplete="off"
+          placeholder=""
+        />
+      </div>
+      <div>
+        <label for="descarga" class="block font-semibold mb-2">Descarga</label>
+        <input
+          type="url"
+          id="descarga"
+          required
+          class="w-full rounded px-4 py-3 border"
+          autocomplete="off"
+          placeholder=""
+        />
+      </div>
+      <div class="flex items-center space-x-6">
+        <button
+          type="submit"
+          id="btnGenerar"
+          disabled
+          class="bg-blue-700 text-white px-6 py-3 rounded hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition"
+        >
+          Agregar
+        </button>
+        <span id="formMessage" class="text-green-500 font-semibold"></span>
+      </div>
+    </form>
+  </section>
+
+  <section class="max-w-xl mb-8 w-full">
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="Buscar..."
+      class="w-full rounded px-4 py-3 border border-gray-700 bg-[#1e293b] focus:outline-none focus:ring-2 focus:ring-blue-600"
+      autocomplete="off"
+      aria-label="Buscar mods"
+    />
+  </section>
+
+  <section class="max-w-xl w-full">
+    <h2 class="text-2xl font-semibold mb-4">Lista de Mods</h2>
+    <div id="mods-list" class="space-y-3"></div>
+    <p id="deleteMessage" class="text-red-600 mt-3 font-semibold"></p>
+  </section>
+
+  <section class="max-w-xl mt-8 w-full flex justify-center">
+    <button
+      id="btnDescargar"
+      class="bg-blue-700 text-white px-5 py-3 rounded-lg hover:bg-blue-800 transition"
+      title="Descargar JSON actualizado"
+    >
+      Descargar
+    </button>
+    <span id="downloadMessage" class="ml-5 text-green-400 font-semibold"></span>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script>
+    const form = document.getElementById("modForm");
+    const list = document.getElementById("mods-list");
+    const btnGenerar = document.getElementById("btnGenerar");
+    const formMessage = document.getElementById("formMessage");
+    const deleteMessage = document.getElementById("deleteMessage");
+    const btnDescargar = document.getElementById("btnDescargar");
+    const downloadMessage = document.getElementById("downloadMessage");
+    const searchInput = document.getElementById("searchInput");
+
+    let mods = [];
+    let editIndex = -1;
+
+    function mostrarMods(filtro = "") {
+      list.innerHTML = "";
+      const filtroLower = filtro.toLowerCase();
+
+      mods.forEach((mod, index) => {
+        if (
+          mod.nombre.toLowerCase().includes(filtroLower) ||
+          mod.descripcion.toLowerCase().includes(filtroLower)
+        ) {
+          const div = document.createElement("div");
+          div.className =
+            "p-4 bg-[#273549] rounded shadow flex justify-between items-center space-x-4";
+
+          const infoDiv = document.createElement("div");
+          infoDiv.className = "flex-1 min-w-0";
+          infoDiv.innerHTML = `
+            <strong>${mod.nombre}</strong><br>
+            <small>${mod.descripcion}</small><br>
+            <small>Video: ${mod.video}</small><br>
+            <small>Descarga: ${mod.descarga}</small>
+          `;
+
+          const btnsDiv = document.createElement("div");
+          btnsDiv.className = "flex items-center space-x-3 flex-shrink-0";
+
+          const dragBtn = document.createElement("button");
+          dragBtn.className = "drag-handle";
+          dragBtn.setAttribute("aria-label", "Mover mod");
+          dragBtn.type = "button";
+          dragBtn.innerHTML = "☰";
+
+          const editBtn = document.createElement("button");
+          editBtn.type = "button";
+          editBtn.setAttribute("aria-label", "Editar mod");
+          editBtn.className =
+            "text-blue-400 hover:text-blue-600 transition p-1 rounded";
+          editBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" class="w-5 h-5">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+            </svg>
+          `;
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.type = "button";
+          deleteBtn.setAttribute("aria-label", "Eliminar mod");
+          deleteBtn.className =
+            "text-red-500 hover:text-red-700 transition p-1 rounded font-bold text-lg leading-none";
+          deleteBtn.textContent = "×";
+
+          btnsDiv.appendChild(dragBtn);
+          btnsDiv.appendChild(editBtn);
+          btnsDiv.appendChild(deleteBtn);
+
+          div.appendChild(infoDiv);
+          div.appendChild(btnsDiv);
+          div.setAttribute("data-index", index);
+
+          list.appendChild(div);
+
+          editBtn.addEventListener("click", () => editarMod(index));
+          deleteBtn.addEventListener("click", () => eliminarMod(index));
+        }
+      });
+
+      iniciarSortable();
+    }
+
+    fetch("mods.json")
+      .then((res) => res.json())
+      .then((data) => {
+        mods = data;
+        mostrarMods();
+      })
+      .catch(() => {
+        mods = [];
+        mostrarMods();
+      });
+
+    function validarCampos() {
+      const nombre = document.getElementById("nombre").value.trim();
+      const descripcion = document.getElementById("descripcion").value.trim();
+      const video = document.getElementById("video").value.trim();
+      const descarga = document.getElementById("descarga").value.trim();
+
+      const habilitar = nombre && descripcion && video && descarga;
+      btnGenerar.disabled = !habilitar;
+
+      if (habilitar) {
+        btnGenerar.classList.remove("opacity-50", "cursor-not-allowed");
+      } else {
+        btnGenerar.classList.add("opacity-50", "cursor-not-allowed");
+      }
+    }
+
+    form.nombre.addEventListener("input", validarCampos);
+    form.descripcion.addEventListener("input", validarCampos);
+    form.video.addEventListener("input", validarCampos);
+    form.descarga.addEventListener("input", validarCampos);
+
+    function limpiarFormulario() {
+      form.nombre.value = "";
+      form.descripcion.value = "";
+      form.video.value = "";
+      form.descarga.value = "";
+      btnGenerar.textContent = "Agregar";
+      btnGenerar.classList.remove("bg-yellow-400", "text-black");
+      btnGenerar.classList.add("bg-blue-700", "text-white");
+      formMessage.textContent = "";
+      editIndex = -1;
+      validarCampos();
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const mod = {
+        nombre: form.nombre.value.trim(),
+        descripcion: form.descripcion.value.trim(),
+        video: form.video.value.trim(),
+        descarga: form.descarga.value.trim(),
+      };
+
+      if (editIndex >= 0) {
+        mods[editIndex] = mod;
+        mostrarMods();
+        limpiarFormulario();
+        formMessage.textContent = "Mod actualizado correctamente.";
+      } else {
+        mods.push(mod);
+        mostrarMods();
+        limpiarFormulario();
+        formMessage.textContent = "Mod agregado correctamente.";
+      }
+      setTimeout(() => (formMessage.textContent = ""), 3000);
+    });
+
+    function editarMod(index) {
+      const mod = mods[index];
+      form.nombre.value = mod.nombre;
+      form.descripcion.value = mod.descripcion;
+      form.video.value = mod.video;
+      form.descarga.value = mod.descarga;
+      btnGenerar.textContent = "Actualizar";
+      btnGenerar.classList.remove("bg-blue-700", "text-white");
+      btnGenerar.classList.add("bg-yellow-400", "text-black");
+      editIndex = index;
+      validarCampos();
+      formMessage.textContent = "";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function eliminarMod(index) {
+      if (
+        confirm(
+          `¿Seguro que deseas eliminar el mod "${mods[index].nombre}"? Esta acción no se puede deshacer.`
+        )
+      ) {
+        mods.splice(index, 1);
+        mostrarMods();
+        deleteMessage.textContent = "Mod eliminado correctamente.";
+        setTimeout(() => (deleteMessage.textContent = ""), 3000);
+      }
+    }
+
+    function iniciarSortable() {
+      Sortable.create(list, {
+        animation: 150,
+        handle: ".drag-handle",
+        ghostClass: "sortable-ghost",
+        onEnd: (evt) => {
+          const [moved] = mods.splice(evt.oldIndex, 1);
+          mods.splice(evt.newIndex, 0, moved);
+          mostrarMods(searchInput.value);
+        },
+      });
+    }
+
+    btnDescargar.addEventListener("click", () => {
+      const json = JSON.stringify(mods, null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "mods.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      downloadMessage.textContent = "Archivo descargado.";
+      setTimeout(() => (downloadMessage.textContent = ""), 3000);
+    });
+
+    searchInput.addEventListener("input", (e) => {
+      mostrarMods(e.target.value);
+    });
+
+    validarCampos();
+  </script>
+</body>
+</html>

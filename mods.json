@@ -1,0 +1,68 @@
+[
+  {
+    "nombre": "Goku SSJ4",
+    "descripcion": "Goku alcanza esta forma en Dragon Ball Daima, si.",
+    "video": "https://www.youtube.com/watch?v=1wMBOtmwO8g",
+    "descarga": "#"
+  },
+  {
+    "nombre": "Goku Super Saiyan",
+    "descripcion": "Transformación legendaria de Goku que incrementa enormemente su poder de combate.",
+    "video": "https://www.youtube.com",
+    "descarga": "https://www.mediafire.com"
+  },
+  {
+    "nombre": "Goku Ultra Instinct",
+    "descripcion": "Estado en el que Goku reacciona sin pensar, alcanzando una velocidad y poder casi divinos.",
+    "video": "https://www.youtube.com",
+    "descarga": "https://www.mediafire.com"
+  },
+  {
+    "nombre": "Goku Niño",
+    "descripcion": "Versión infantil de Goku al inicio de su aventura, inocente pero con gran potencial.",
+    "video": "https://www.youtube.com",
+    "descarga": "#"
+  },
+  {
+    "nombre": "Goku Dios SSJ200000",
+    "descripcion": "Transformación con cabello rojo obtenida mediante un ritual Saiyajin, ofrece gran poder divino.",
+    "video": "https://www.youtube.com",
+    "descarga": "https://www.mediafire.com"
+  },
+  {
+    "nombre": "Goku Black",
+    "descripcion": "Versión malvada de Goku en un universo alternativo, con poderes oscuros y una personalidad retorcida.",
+    "video": "https://www.youtube.com",
+    "descarga": "https://www.mediafire.com"
+  },
+  {
+    "nombre": "Vegeta Super Saiyan",
+    "descripcion": "Primera gran transformación de Vegeta que lo pone a la par de Goku en poder.",
+    "video": "https://www.youtube.com",
+    "descarga": "https://www.youtube.com"
+  },
+  {
+    "nombre": "Vegeta Majin",
+    "descripcion": "Estado en el que Vegeta se deja controlar por Babidi para aumentar su poder.",
+    "video": "https://www.youtube.com",
+    "descarga": "https://www.youtube.com"
+  },
+  {
+    "nombre": "Vegeta Blue",
+    "descripcion": "Transformación divina con cabello azul, resultado del Super Saiyan combinado con el poder de dios.",
+    "video": "https://www.youtube.com",
+    "descarga": "https://www.youtube.com"
+  },
+  {
+    "nombre": "Vegeta Niño",
+    "descripcion": "La versión infantil de Vegeta, criado como príncipe de los Saiyajin.",
+    "video": "https://www.youtube.com",
+    "descarga": "https://www.youtube.com"
+  },
+  {
+    "nombre": "Vegeta Ultra Ego",
+    "descripcion": "Forma que aumenta su poder cuanto más daño recibe, reflejando su orgullo y determinación.",
+    "video": "https://www.youtube.com",
+    "descarga": "https://www.youtube.com"
+  }
+]

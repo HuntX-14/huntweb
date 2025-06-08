@@ -1,0 +1,33 @@
+[
+  {
+    "nombre": "YouTube",
+    "link": "https://www.youtube.com/@Hunter./",
+    "icono": "fab fa-youtube",
+    "color": "bg-red-600"
+  },
+  {
+    "nombre": "Facebook",
+    "link": "https://www.facebook.com/WhiteModder/",
+    "icono": "fab fa-facebook",
+    "color": "bg-blue-600"
+  },
+  {
+    "nombre": "TikTok",
+    "link": "https://www.tiktok.com/@.hunterx",
+    "icono": "fab fa-tiktok",
+    "color": "bg-black"
+  },
+  {
+    "nombre": "PayPal",
+    "link": "https://www.paypal.com/paypalme/HunterBTX",
+    "icono": "fab fa-paypal",
+    "color": "bg-blue-700"
+  },
+  {
+    "nombre": "Discord",
+    "usuario": "Hunter",
+    "link": "https://discord.com/users/488038198132473858",
+    "icono": "fab fa-discord",
+    "color": "bg-indigo-400"
+  }
+]
