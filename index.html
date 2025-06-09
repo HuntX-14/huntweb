@@ -59,6 +59,12 @@
     .btn-custom:hover {
       box-shadow: 0 0 0 2px #6366f1;
     }
+
+    .link-hidden {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col md:flex-row">
@@ -66,7 +72,7 @@
   <nav aria-label="Barra lateral" class="w-full md:w-64 p-4 bg-gray-800 md:fixed md:h-full md:overflow-y-auto border-b md:border-b-0 md:border-r border-gray-700 text-gray-300">
     <header class="text-center">
       <h1 class="text-3xl font-bold text-gray-100">Hunter</h1>
-      <p class="text-sm text-gray-400 mb-4">I'm Hunter, yeah.</p>
+      <p class="text-sm text-gray-400 mb-4">I'm Hunter, yeah<a href="https://brianc318.wixsite.com/hunterwp" target="_blank" class="link-hidden">.</a></p>
     </header>
     <div class="relative mb-4">
       <input id="searchInput" type="text" placeholder="Buscar mod..."
@@ -109,7 +115,6 @@
   </main>
 
   <script>
-    // Tu script permanece intacto, sin cambios
     async function cargarMods() {
       try {
         const response = await fetch("mods.json");
