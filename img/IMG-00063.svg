@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Vista previa del mod">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#36425d"/><stop offset="1" stop-color="#121721"/></linearGradient>
+    <radialGradient id="glow" cx="70%" cy="25%" r="75%"><stop offset="0" stop-color="#8497bd" stop-opacity=".28"/><stop offset="1" stop-color="#8497bd" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0v48" fill="none" stroke="#d7def5" stroke-opacity=".045"/></pattern>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <rect width="800" height="450" fill="url(#glow)"/>
+  <rect width="800" height="450" fill="url(#grid)"/>
+  <circle cx="630" cy="105" r="165" fill="none" stroke="#aab4d4" stroke-opacity=".08" stroke-width="2"/>
+  <circle cx="630" cy="105" r="105" fill="none" stroke="#aab4d4" stroke-opacity=".08" stroke-width="2"/>
+  <path d="M-40 380 300 40h115L74 380Z" fill="#05070b" opacity=".22"/>
+</svg>
